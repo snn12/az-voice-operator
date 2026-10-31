@@ -214,9 +214,16 @@ def run_evaluation(
     audio file is missing or empty, so a report cannot be produced without real
     audio inputs.
     """
-    categories = tuple(entity_categories)
+    if isinstance(entity_categories, str):
+        raise EvaluationError("entity categories must be a sequence of names, not a string")
+    try:
+        categories = tuple(entity_categories)
+    except TypeError as error:
+        raise EvaluationError("entity categories must be a sequence of names") from error
     if not categories:
         raise EvaluationError("at least one entity category is required")
+    if any(not isinstance(category, str) or not category for category in categories):
+        raise EvaluationError("entity categories must be non-empty strings")
     if len(set(categories)) != len(categories):
         raise EvaluationError("entity categories must be unique")
 
@@ -247,10 +254,17 @@ def run_evaluation(
         )
         transcript_scores.append(score)
 
+        try:
+            audio_sha256 = _sha256_file(record.audio_path)
+        except OSError as error:
+            raise EvaluationError(
+                f"cannot read audio for record {record.example_id!r}: {error}"
+            ) from error
+
         payload: dict[str, Any] = {
             "id": record.example_id,
             "audio": record.audio,
-            "audio_sha256": _sha256_file(record.audio_path),
+            "audio_sha256": audio_sha256,
             **score.to_dict(),
         }
         if record.reference_entities or record.hypothesis_entities:

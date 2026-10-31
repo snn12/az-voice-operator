@@ -4,11 +4,26 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from collections.abc import Sequence
+from pathlib import Path
 
 from .entities import ENTITY_CATEGORIES
 from .normalization import NormalizationConfig
-from .runner import EvaluationError, run_evaluation, write_report
+from .runner import run_evaluation, write_report
+
+
+def _configure_text_streams() -> None:
+    """Use UTF-8 for CLI output regardless of the console code page."""
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if not callable(reconfigure):
+            continue
+        try:
+            reconfigure(encoding="utf-8", errors="backslashreplace")
+        except (AttributeError, ValueError):
+            # Test harnesses and detached streams may not support reconfiguration.
+            continue
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -34,7 +49,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--no-lowercase",
         action="store_true",
-        help="Disable Azerbaijani-aware lowercasing.",
+        help="Disable Azerbaijani-aware lowercasing for transcripts.",
     )
     parser.add_argument(
         "--unicode-form",
@@ -56,6 +71,7 @@ def _build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
+    _configure_text_streams()
     parser = _build_parser()
     args = parser.parse_args(argv)
 
@@ -76,12 +92,21 @@ def main(argv: Sequence[str] | None = None) -> int:
             entity_categories=categories,
             code_version=args.code_version,
         )
-    except (EvaluationError, ValueError) as error:
+    except (ValueError, OSError) as error:
         parser.exit(status=2, message=f"error: {error}\n")
 
     if args.output:
-        destination = write_report(report, args.output)
-        print(f"Wrote report: {destination}")
+        try:
+            if Path(args.output).resolve() == Path(args.dataset).resolve():
+                parser.exit(
+                    status=2,
+                    message="error: --output must not overwrite the dataset\n",
+                )
+            destination = write_report(report, args.output)
+        except OSError as error:
+            parser.exit(status=2, message=f"error: cannot write report: {error}\n")
+        else:
+            print(f"Wrote report: {destination}")
     else:
         print(json.dumps(report, ensure_ascii=False, indent=2))
     return 0

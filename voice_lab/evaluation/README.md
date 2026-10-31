@@ -42,6 +42,8 @@ Not implemented yet:
 
 Azerbaijani casing is handled explicitly: `I` lowercases to `ı`, and `İ`
 lowercases to `i`. Python's default lowercasing is not used for these pairs.
+This also holds for decomposed input: under NFD, `İ` is `I` plus a combining dot
+and still lowercases to `i`.
 
 ## Dataset format
 
@@ -101,7 +103,9 @@ separately and do not inflate accuracy. Accuracy is `null` when a category has
 no annotated examples.
 
 An empty reference has an undefined rate (`null`); the raw error counts are
-still reported.
+still reported. Corpus rates sum every edit operation, so an empty reference
+contributes its insertions to the numerator and zero reference units to the
+denominator. `mean_utterance_*` averages only utterances with a defined rate.
 
 ## Reproducibility
 
@@ -135,21 +139,23 @@ Options:
 ```text
 --cer-include-spaces        count spaces in CER
 --keep-punctuation          preserve punctuation in transcript normalization
---no-lowercase              disable Azerbaijani-aware lowercasing
+--no-lowercase              disable Azerbaijani-aware lowercasing for transcripts
 --unicode-form {NFC,NFD,NONE}
 --entity-categories name,date,time,number
 --code-version <value>
 ```
 
-The command exits with status 2 if the dataset is invalid, audio is missing or
-empty, ids are duplicated, or a required field is absent.
+The command exits with status 2 if the dataset is invalid, audio is missing,
+empty, or unreadable, ids are duplicated, a required field is absent, the report
+cannot be written, or `--output` would overwrite the dataset. Stdout and
+`--output` reports are UTF-8.
 
 ## Validity rules
 
 - A benchmark result is valid only when it was produced from real, listed audio.
-- The runner rejects missing or empty audio, but it cannot prove where a
-  hypothesis came from. The operator must confirm the hypothesis was produced
-  from the same audio by the system under test.
+- The runner rejects missing, empty, or unreadable audio, but it cannot prove
+  where a hypothesis came from. The operator must confirm the hypothesis was
+  produced from the same audio by the system under test.
 - Never hand-edit scores or drop failed utterances.
 - Never tune on the hold-out set.
 - Never claim a vendor comparison before E0 confirms Azerbaijani support.

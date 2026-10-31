@@ -151,3 +151,26 @@ def test_write_report_preserves_unicode(dataset: Path, tmp_path: Path) -> None:
     loaded = json.loads(destination.read_text(encoding="utf-8"))
     assert loaded["transcripts"][0]["reference_original"].startswith("Əli")
     assert "Əli" in destination.read_text(encoding="utf-8")
+
+
+def test_string_entity_categories_are_rejected(dataset: Path) -> None:
+    with pytest.raises(EvaluationError, match="sequence of names"):
+        run_evaluation(dataset, entity_categories="name")
+
+
+def test_non_string_entity_categories_are_rejected(dataset: Path) -> None:
+    with pytest.raises(EvaluationError, match="non-empty strings"):
+        run_evaluation(dataset, entity_categories=("name", 1))  # type: ignore[arg-type]
+
+
+def test_audio_read_failure_is_reported(
+    dataset: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def fail(_path: Path) -> str:
+        raise OSError("simulated read failure")
+
+    monkeypatch.setattr("voice_lab.evaluation.runner._sha256_file", fail)
+
+    with pytest.raises(EvaluationError, match="cannot read audio"):
+        run_evaluation(dataset)

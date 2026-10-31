@@ -74,6 +74,25 @@ def test_nfd_is_explicit_and_does_not_drop_marks() -> None:
     assert normalized != "o"
 
 
+def test_nfd_lowercasing_matches_nfd_of_azerbaijani_lowercase() -> None:
+    case_pairs = {
+        "Ə": "ə",
+        "I": "ı",
+        "İ": "i",
+        "Ö": "ö",
+        "Ü": "ü",
+        "Ğ": "ğ",
+        "Ş": "ş",
+        "Ç": "ç",
+    }
+    for uppercase, lowercase in case_pairs.items():
+        normalized = normalize_text(
+            uppercase,
+            NormalizationConfig(unicode_form="NFD"),
+        )
+        assert normalized == unicodedata.normalize("NFD", lowercase)
+
+
 def test_invalid_unicode_form_is_rejected() -> None:
     with pytest.raises(ValueError, match="unicode_form"):
         NormalizationConfig(unicode_form="NFKC")  # type: ignore[arg-type]

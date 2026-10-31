@@ -45,6 +45,10 @@ def lower_az(text: str) -> str:
     become ``ı`` and ``İ`` to become ``i``, so the mapping is applied first.
     Azerbaijani letters remain Azerbaijani letters.
     """
+    # NFD represents İ as I + COMBINING DOT ABOVE. Replace that sequence before
+    # the I -> ı mapping; otherwise the result would be ı + a stray dot instead
+    # of the Azerbaijani i.
+    text = text.replace("I\u0307", "i")
     return text.translate(_AZERBAIJANI_CASE_MAP).lower()
 
 

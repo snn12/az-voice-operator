@@ -30,8 +30,6 @@ from .normalization import (
 )
 from .runner import EvaluationError, run_evaluation, write_report
 
-__version__ = "0.1.0"
-
 __all__ = [
     "AZERBAIJANI_LOWER",
     "AZERBAIJANI_UPPER",
