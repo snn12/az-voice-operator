@@ -1,0 +1,103 @@
+# ---------------------------------------------------------------------------
+# Secrets and credentials
+# ---------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+credentials.json
+credentials*.json
+secrets.json
+secrets.yaml
+secrets.yml
+service-account*.json
+client-secret*.json
+*.secret
+
+# ---------------------------------------------------------------------------
+# Python
+# ---------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+ENV/
+.python-version
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.pyright/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+*.spec
+
+# ---------------------------------------------------------------------------
+# Node / Next.js (future web dashboard)
+# ---------------------------------------------------------------------------
+node_modules/
+.next/
+out/
+.turbo/
+*.tsbuildinfo
+
+# ---------------------------------------------------------------------------
+# Logs and runtime artifacts
+# ---------------------------------------------------------------------------
+*.log
+logs/
+tmp/
+temp/
+*.tmp
+
+# ---------------------------------------------------------------------------
+# Audio, recordings and private datasets
+# ---------------------------------------------------------------------------
+*.wav
+*.mp3
+*.m4a
+*.ogg
+*.flac
+*.opus
+*.aac
+*.webm
+*.pcm
+*.raw
+recordings/
+private/
+data/private/
+voice_lab/datasets/*
+!voice_lab/datasets/.gitkeep
+!voice_lab/datasets/README.md
+
+# ---------------------------------------------------------------------------
+# Local infrastructure state
+# ---------------------------------------------------------------------------
+.docker/
+pgdata/
+*.sqlite
+*.sqlite3
+*.db
+
+# ---------------------------------------------------------------------------
+# Editors and operating systems
+# ---------------------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+Desktop.ini
