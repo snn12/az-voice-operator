@@ -35,7 +35,8 @@ should.
 - Restaurant owner interviews in Baku (15-question guide, 10 target venues).
 - Workflow, reservation, FAQ, and pricing discovery.
 - Pilot success criteria definition.
-- Voice Lab experiment plan.
+- Voice Lab experiment plan and evaluation foundation (normalization, WER/CER,
+  entity scoring). No benchmark has been run.
 
 All of these are tracked in the project's Notion workspace. No interviews have
 been completed and no results are reported in this repository.

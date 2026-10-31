@@ -36,19 +36,19 @@ az_voice_operator = ["py.typed"]
 minversion = "8.0"
 testpaths = ["tests"]
 addopts = "-ra"
-pythonpath = ["src"]
+pythonpath = ["src", "."]
 
 [tool.ruff]
 line-length = 100
 target-version = "py311"
-src = ["src", "tests", "voice_lab", "scripts"]
+src = ["src", "."]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM"]
 ignore = []
 
 [tool.ruff.lint.isort]
-known-first-party = ["az_voice_operator"]
+known-first-party = ["az_voice_operator", "voice_lab"]
 
 [tool.ruff.format]
 quote-style = "double"

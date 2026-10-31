@@ -82,6 +82,12 @@ voice_lab/datasets/*
 !voice_lab/datasets/.gitkeep
 !voice_lab/datasets/README.md
 
+# Generated Voice Lab outputs may contain transcripts or audio
+voice_lab/evaluation/reports/
+voice_lab/stt_benchmark/reports/
+voice_lab/tts_benchmark/samples/
+voice_lab/latency_benchmark/results/
+
 # ---------------------------------------------------------------------------
 # Local infrastructure state
 # ---------------------------------------------------------------------------
