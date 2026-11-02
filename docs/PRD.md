@@ -191,6 +191,10 @@ Headline gates:
 - Explicit human requests honored 100%; correct escalation ≥ 95%.
 - Caller CSAT ≥ 4.0 / 5.
 
+STT evaluation must report CER alongside WER, and entity accuracy must be broken
+out for names, dates, times, and numbers. No CER threshold has been approved yet;
+CER results must be reported, not used to replace WER.
+
 ## 11. Assumptions
 
 - Restaurants use phone reservations as a meaningful booking channel.

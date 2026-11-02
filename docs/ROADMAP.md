@@ -53,7 +53,7 @@ Deliverables:
 
 - Availability and compliance matrix for each vendor.
 - Consented Azerbaijani test corpus with transcripts.
-- STT benchmark: WER, entity accuracy, latency.
+- STT benchmark: WER, CER, entity accuracy, latency.
 - TTS listening test: naturalness and domain pronunciation.
 - End-to-end comparison including OpenAI Realtime.
 - Cost and operability review.
@@ -67,7 +67,8 @@ Exit criteria:
 - End-to-end median TTFA and P95 measured on a realistic path.
 - Chosen stack recorded in `docs/DECISIONS.md`.
 
-Current status: **not started**. No vendor has been tested.
+Current status: **preparation**. The evaluation foundation exists; no vendor has
+been tested and no benchmark has been run.
 
 ## Phase 2 — MVP Build
 

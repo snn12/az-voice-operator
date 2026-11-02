@@ -129,6 +129,13 @@ docs/              product, architecture, roadmap, security, decisions
   duplicates, and cancellation.
 - Provider adapters require contract tests that run against a fake transport.
 - Latency tests report median and P95; never report only the best run.
+- STT evaluation reports both WER and CER, with the normalization settings and
+  dataset/audio hashes recorded.
+- Entity accuracy for names, dates, times, and numbers is reported separately.
+- Keep original transcripts alongside normalized transcripts; never ASCII-fold
+  `ə`, `ı`, `ö`, `ü`, `ğ`, `ş`, or `ç`.
+- Never claim a benchmark result without real audio testing. Synthetic fixtures
+  validate code only.
 - Tests must not call paid vendor APIs in CI by default.
 - Never commit private recordings. Use consented, licensed, or synthetic audio
   only, and keep it out of Git.

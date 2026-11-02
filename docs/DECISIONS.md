@@ -17,6 +17,7 @@ Format: context → decision → status → consequences.
 | D-008 | Provider selection deferred to Voice Lab | Accepted | 2026-11-01 |
 | D-009 | Notion as project-management workspace | Accepted | 2026-11-01 |
 | D-010 | Repository and commit conventions | Accepted | 2026-11-01 |
+| D-011 | Azerbaijani evaluation preserves orthography | Accepted | 2026-11-01 |
 
 ---
 
@@ -190,6 +191,35 @@ commit is verified. Use `AGENTS.md` as the contributor contract.
 - The initial commit is `chore: initialize AZ Voice Operator project`.
 - The remote configuration is preserved as cloned.
 - Generated audio, datasets, and environment files are ignored.
+
+## D-011 — Azerbaijani evaluation preserves orthography
+
+**Context:** STT scoring can hide Azerbaijani errors if diacritics are stripped or
+letters are ASCII-folded. Reporting only one metric, or producing numbers from
+unverified audio, makes vendor comparisons misleading and irreproducible.
+
+**Decision:** Preserve `ə`, `ı`, `ö`, `ü`, `ğ`, `ş`, `ç` and their uppercase
+forms in all evaluation. Never transliterate to English equivalents or use
+compatibility normalization. Make normalization configurable and record it.
+Report both WER and CER. Score names, dates, times, and numbers independently.
+Retain original and normalized transcripts. Record dataset, audio, and config
+hashes plus a code version. Refuse to produce a report when required audio is
+missing or empty.
+
+**Status:** Accepted.
+
+**Consequences:**
+
+- Evaluation code lives in `voice_lab/evaluation/` and is separate from the
+  product runtime.
+- Entity evaluation requires annotations; automatic extraction is not treated as
+  ground truth.
+- CER is reported, but no CER threshold is approved until real audio evidence
+  exists.
+- Synthetic fixtures may test code behaviour but can never support a benchmark
+  claim.
+- Reports with different normalization settings are not directly comparable
+  unless the configuration difference is stated.
 
 ---
 

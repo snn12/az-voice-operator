@@ -3,8 +3,8 @@
 Offline experiments for selecting the Azerbaijani speech stack. The Voice Lab is
 separate from the product runtime: it produces evidence, not production code.
 
-> **Status: preparation only.** No experiment has been run and no result is
-> reported here. Vendor Azerbaijani coverage is unverified.
+> **Status: preparation and evaluation tooling.** No experiment has been run and
+> no result is reported here. Vendor Azerbaijani coverage is unverified.
 
 ## Purpose
 
@@ -58,12 +58,38 @@ another language as a proxy.
 **No audio is committed to Git.** The directory is ignored except for its
 placeholder files. Do not place private recordings here.
 
+## Azerbaijani evaluation requirements
+
+These rules apply to every STT and end-to-end evaluation:
+
+- **Preserve the Azerbaijani alphabet:** `ə`, `ı`, `ö`, `ü`, `ğ`, `ş`, `ç`, and
+  their uppercase forms. Never ASCII-fold them to `e`, `i`, `o`, `u`, `g`, `s`,
+  `c`.
+- **Never strip diacritics** or use compatibility normalization (NFKC/NFKD).
+- **Normalization is configurable and recorded:** case, punctuation, whitespace,
+  and Unicode form are explicit settings, not hidden defaults.
+- **Report WER and CER** for every transcript set. CER space handling is an
+  explicit setting.
+- **Score entity categories separately:** names, dates, times, and numbers.
+- **Keep original transcripts alongside normalized transcripts** in every
+  report. Normalization never replaces the source text.
+- **Make runs reproducible:** record the dataset SHA-256, every audio file hash,
+  the normalization/scoring config, the tool version, and an optional code
+  version.
+- **No benchmark result without real audio testing.** A report is invalid if any
+  referenced audio file is missing, empty, or not the audio the hypotheses were
+  produced from.
+
+The scoring foundation is in [`evaluation/`](evaluation/README.md). Dataset
+collection and all benchmark runs remain **not started**.
+
 ## Metrics
 
 | Metric | Proposed threshold |
 | --- | --- |
 | STT WER (hold-out) | ≤ 15% |
-| Entity accuracy (date, time, party size, name, phone) | ≥ 95% |
+| STT CER (hold-out) | Reported alongside WER; threshold not yet approved |
+| Entity accuracy (name, date, time, number) | ≥ 95% |
 | TTS naturalness (blind MOS-style) | ≥ 4.0 / 5 |
 | TTS domain pronunciation | ≥ 90% |
 | End-to-end task success | ≥ 90% |
@@ -73,7 +99,8 @@ placeholder files. Do not place private recordings here.
 | Handoff correctness | ≥ 95% |
 
 Thresholds are proposals aligned with the Notion *Pilot Success Metrics* page and
-require sign-off. They are not results.
+require sign-off. They are not results. The CER threshold is intentionally
+unset until real audio evidence exists.
 
 ## Directory guide
 
@@ -83,7 +110,7 @@ voice_lab/
 ├── stt_benchmark/     transcription scoring and provider runners
 ├── tts_benchmark/     synthesis samples and blind listening sheets
 ├── latency_benchmark/ TTFA and barge-in harnesses
-└── evaluation/        scoring rubrics, reports, decision memos
+└── evaluation/        normalization, WER/CER, entity scoring, run reports
 ```
 
 Each directory contains a README describing its expected inputs and outputs.
@@ -91,8 +118,10 @@ Each directory contains a README describing its expected inputs and outputs.
 ## Procedure
 
 1. Complete E0 and freeze the eligible vendor list.
-2. Freeze corpus, scripts, and rubric with version IDs.
-3. Run E1 on identical audio; capture per-stage latency.
+2. Freeze corpus, scripts, rubric, normalization config, and scoring config with
+   version IDs.
+3. Run E1 on identical audio; report WER, CER, entity accuracy for names, dates,
+   times, and numbers, plus per-stage latency.
 4. Run E2 blind and randomized; hide vendor names from listeners.
 5. Build both the component pipeline and the realtime path with the same
    prompts and restaurant content.
@@ -106,6 +135,10 @@ Each directory contains a README describing its expected inputs and outputs.
 - Never exclude failed calls from the sample.
 - Never tune on the hold-out set.
 - Never commit vendor credentials or private audio.
+- Never transliterate Azerbaijani text for scoring; retain original and
+  normalized transcripts together.
+- Never report a benchmark number without real audio testing and the recorded
+  audio hashes.
 - Lab results do not authorize production; the pilot remains the validation
   gate.
 
